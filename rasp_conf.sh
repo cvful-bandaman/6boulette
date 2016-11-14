@@ -1,16 +1,21 @@
 #!/bin/bash
 
-#Ce script va configurer l'interface fournie en argument : 
-#une adresse IP statique lui sera attribuée ainsi qu'une route pour que l'ordinateur puisse communiquer avec le Pi.
-#De plus, le script configure le forwarding en rajoutant deux règles iptables, il ensuite active ce dernier grâce au fichier ip_forward.
+# Ce script va configurer l'interface fournie en argument : 
+# une adresse IP statique lui sera attribuée ainsi qu'une route pour que l'ordinateur puisse communiquer avec le Pi.
+# De plus, le script configure le forwarding en rajoutant deux règles iptables, il ensuite active ce dernier grâce au fichier ip_forward.
+
+# Interface Raspberry Pi : $1
+# Interface Internet : $2
+
+sudo service network-manager stop;
+ifconfig $1 up;
+ifconfig $2 up;
+dhclient $2 &;
 
 if [ $# -eq 0 ]; then
     echo "Aucune interface fournie, la première est celle du Raspberry Pi, la seconde, l'accès Internet.";
     exit 1;
 fi
-
-interface_raspberry=$1;
-interface_internet=$2;
 
 echo "Interface sélectionnée : $1";
 echo "Configuration de l'interface...";
@@ -22,7 +27,7 @@ ifconfig $1;
 echo "Affichage des routes de l'interface :";
 route -n | grep $1;
 
-echo "Création des règles IPtable de forwarding :";
+echo "Création des règles IPtable de forwarding...";
 iptables -t nat -A POSTROUTING -o $2 -j MASQUERADE;
 iptables -A FORWARD -i $1 -j ACCEPT;
 

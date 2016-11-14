@@ -1,12 +1,15 @@
 #!/bin/bash
 
+#Ce script va configurer l'interface fournie en argument : 
+#une adresse IP statique lui sera attribuée ainsi qu'une route pour que l'ordinateur puisse communiquer avec le Pi 
+
 if [ $# -eq 0 ]; then
     echo "Aucune interface fournie.";
     exit 1;
 fi
 
 interface_raspberry=$1;
-echo "interface sélectionnée : $1";
+echo "Interface sélectionnée : $1";
 echo "Configuration de l'interface...";
 ifconfig $1 192.168.10.254 netmask 255.255.255.0;
 echo "Ajout de la route...";

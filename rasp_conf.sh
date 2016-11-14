@@ -18,3 +18,7 @@ echo "Affichage de l'interface :";
 ifconfig $1;
 echo "Affichage des routes de l'interface :";
 route -n | grep $1;
+echo "Activation du forwarding...";
+echo 1 > /proc/sys/net/ipv4/ip_forward;
+echo "Vérification :";
+cat /proc/sys/net/ipv4/ip_forward;

@@ -7,17 +7,22 @@
 # Interface Raspberry Pi : $1
 # Interface Internet : $2
 
-sudo service network-manager stop;
-ifconfig $1 up;
-ifconfig $2 up;
-dhclient $2 &;
-
 if [ $# -eq 0 ]; then
-    echo "Aucune interface fournie, la première est celle du Raspberry Pi, la seconde, l'accès Internet.";
-    exit 1;
+	echo "Aucune interface fournie, la première est celle du Raspberry Pi, la seconde, l'accès Internet.";
+	exit 1;
 fi
 
-echo "Interface sélectionnée : $1";
+if [[ $2 == w* ]]; then
+	echo "Interface wifi sélectionnée.";
+	else
+		echo "Interface filaire sélectionnée, arrêt de network-manager.";
+		sudo service network-manager stop;
+		ifconfig $1 up;
+		ifconfig $2 up;
+		dhclient $2;
+fi
+
+echo "Interfaces sélectionnées : $1 et $2";
 echo "Configuration de l'interface...";
 ifconfig $1 192.168.10.254 netmask 255.255.255.0;
 echo "Ajout de la route...";

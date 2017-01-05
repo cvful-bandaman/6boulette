@@ -8,7 +8,7 @@
 # Interface Internet : $2
 
 if [ $# -eq 0 ]; then
-	echo "Aucune interface fournie, la première est celle du Raspberry Pi, la seconde, l'accès Internet.";
+	echo "Aucune interface fournie, la première est celle vers le Raspberry Pi, la seconde, vers Internet.";
 	exit 1;
 fi
 
@@ -42,7 +42,12 @@ iptables -t nat -L | grep -A 3 POSTROUTING;
 echo "Table FILTER - FORWARD";
 iptables -L | grep -A 3 FORWARD;
 
-echo "Activation du forwarding...";
+echo "Activation du forwarding IPv4...";
 echo 1 > /proc/sys/net/ipv4/ip_forward;
 echo "Vérification :";
 cat /proc/sys/net/ipv4/ip_forward;
+
+echo "Activation du forwarding IPv6...";
+sysctl -w net.ipv6.conf.all.forwarding=1;
+
+
